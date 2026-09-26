@@ -109,6 +109,8 @@ mevki_sozlugu = {
 secilen_mevki_etiket = st.sidebar.selectbox("Aranacak Mevkiyi Seçin:", list(mevki_sozlugu.keys()))
 mevki_kodu = mevki_sozlugu[secilen_mevki_etiket]
 
+oneri_sayisi = st.sidebar.slider("Önerilecek Oyuncu Sayısı:", min_value=1, max_value=20, value=5)
+
 if mevki_kodu:
     df_filtrelenmis = df_genel[df_genel['Pos'].str.contains(mevki_kodu, na=False)].reset_index(drop=True)
 else:
@@ -136,7 +138,7 @@ for stat in aktif_istatistikler:
 if len(df_filtrelenmis) > 5:
     scaler = StandardScaler()
     olcekli_veri = scaler.fit_transform(df_filtrelenmis[nihai_ozellikler])
-    model = NearestNeighbors(n_neighbors=6, algorithm='auto')
+    model = NearestNeighbors(n_neighbors=oneri_sayisi + 1, algorithm='auto')
     model.fit(olcekli_veri)
 
     oyuncu_listesi = df_filtrelenmis['Player'].sort_values().tolist()
